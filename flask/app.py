@@ -2,28 +2,30 @@
 # -*- coding: utf-8 -*-
 
 from flask import Flask
-from flask import request
+from flask import request, render_template
 
 app = Flask(__name__)
 
+
 @app.route('/', methods=['GET', 'POST'])
 def home():
-    return '<h1>Home Page !</h1>'
+    return render_template('home.html')
+
 
 @app.route('/signin', methods=['GET'])
 def signin_form():
-    return '''<form action="/signin" method="post">
-              <p><input name="username"></p>
-              <p><input name="passwd" type="password"></p>
-              <p><button type="submit">Sign In</button></p>
-              </form>'''
+    return render_template('form.html')
+
 
 @app.route('/signin', methods=['POST'])
 def signin():
     # 需要从request对象读取表单内容：
-    if request.form['username']=='yin' and request.form['passwd']=='123':
-        return '<h3>Hello, yin!</h3>'
-    return '<h3>Bad username or password.</h3>'
+    username = request.form['username']
+    password = request.form['password']
+    if username=='yin' and password=='123':
+        return render_template('signin-ok.html', username=username)
+    return render_template('form.html', message='Bad username or password.', username=username)
+
 
 if __name__ == '__main__':
     app.run()
